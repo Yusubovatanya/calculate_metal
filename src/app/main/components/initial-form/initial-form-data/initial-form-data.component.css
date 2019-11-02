@@ -1,0 +1,73 @@
+.box_info {
+  border: 1px solid #e6dfdf;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.title_detail {
+  margin-top: 0;
+}
+
+.box_radio-baton {
+  margin: 20px 20px 10px 0;
+}
+
+.hexagon_icon {
+  background: url('/../../assets/img/hexagon_icon.png') no-repeat center/cover;
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+}
+
+.notation {
+  width: 100%;
+}
+
+
+.text_footer {
+  padding-top: 50px
+}
+
+.header_form {
+  width: 250px;
+}
+
+.title_table {
+  width: 100%;
+}
+
+.title_tech-condition {
+  color: rgba(0, 0, 0, .54);
+}
+
+.header_form textarea {
+  height: 50px;
+}
+
+.tech_condition {
+  padding-top: 50px;
+}
+
+.checkCondition p {
+  margin: 0;
+}
+
+.checkCondition {
+  width: auto;
+}
+
+.field_tech-condition {
+  width: 100%;
+}
+
+:host ::ng-deep .mat-checkbox-layout {
+  white-space: inherit;
+}
+
+:host ::ng-deep .mat-checkbox-inner-container {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+

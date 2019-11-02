@@ -1,20 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ResultTableDataComponent } from './result-table-data/result-table-data.component';
 import { MaterialModule } from 'src/app/material/material.module';
+import { ResultComponent } from './result/result.component';
+
 
 
 
 @NgModule({
   declarations: [ 
-    ResultTableDataComponent,
+    ResultComponent,
   ],
   imports: [
     CommonModule,
     MaterialModule,
   ],
   exports: [
-    ResultTableDataComponent,
+    ResultComponent,
   ]
 })
-export class ResultTableModule { }
+export class ResultModule { }

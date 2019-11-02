@@ -1,12 +1,13 @@
 import { TestBed } from '@angular/core/testing';
+import { MetalDataService } from './metal-data.service';
 
-import { MetallService } from './metall.service';
+
 
 describe('MetallService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: MetallService = TestBed.get(MetallService);
+    const service: MetalDataService = TestBed.get(MetalDataService);
     expect(service).toBeTruthy();
   });
 });

@@ -8,11 +8,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxPrintModule } from 'ngx-print';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from './material/material.module';
+import { DataTableComponent } from './shared/data-table/data-table.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    DataTableComponent
   ],
   imports: [
     BrowserModule,

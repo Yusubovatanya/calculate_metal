@@ -5,7 +5,9 @@ import { MainRoutingModule } from './main-routing.module';
 import { MainComponent } from './main.component';
 import { MaterialModule } from '../material/material.module';
 import { InitialFormModule } from './components/initial-form/initial-form.module';
-import { ResultTableModule } from './components/result-table/result-table.module';
+import { ResultModule } from './components/result/result.module';
+
+
 
 
 @NgModule({
@@ -17,7 +19,7 @@ import { ResultTableModule } from './components/result-table/result-table.module
     MainRoutingModule,
     MaterialModule,
     InitialFormModule,
-    ResultTableModule,
+    ResultModule,
   ],
   exports: [],
 })

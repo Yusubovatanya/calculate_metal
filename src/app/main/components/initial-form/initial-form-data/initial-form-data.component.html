@@ -1,1 +1,150 @@
-<p>inisial-form-data works!</p>
+<mat-card fxLayout="column" fxFlex="35">
+  <form [formGroup]="dataForm">
+    <div class="box_info">
+      <p class="title_detail">Данные о детали:</p>
+      <div fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="20px">
+        <mat-form-field fxFlex="40">
+          <input matInput placeholder="Шифр детали" name="detailNumber" formControlName="detailNumber">
+        </mat-form-field>
+        <mat-form-field fxFlex="40">
+          <input matInput placeholder="Наименование детали" name="detailName" formControlName="detailName">
+        </mat-form-field>
+        <mat-form-field fxFlex="20">
+          <input matInput placeholder="Масса готовой детали, кг" name="detailWeight" formControlName="detailWeight">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="box_info">
+      <section class="box_material">
+        <label>Материал:</label><br>
+        <mat-radio-group (change)="changeTypeMaterial($event)" name="typeChangeMaterial"
+          formControlName="typeChangeMaterial">
+          <mat-radio-button class="box_radio-baton" value="selectMaterial">Выбрать из списка</mat-radio-button>
+          <mat-radio-button class="box_radio-baton" value="writeMaterial">Ввести вручную</mat-radio-button>
+        </mat-radio-group>
+      </section>
+      <div fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="20px">
+        <mat-form-field fxFlex="40">
+          <mat-label>Материал</mat-label>
+          <mat-select formControlName="materialSelectValue" name="materialSelectValue">
+            <mat-option *ngFor="let material of materialList" [value]="material">
+              {{material.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field fxFlex="40">
+          <input matInput placeholder="Материал" formControlName="materialValue" name="materialValue">
+        </mat-form-field>
+        <mat-form-field fxFlex="20">
+          <input matInput placeholder="Плотность, кг/м3" formControlName="materialDensity" name="materialDensity"
+            [value]="dataForm.controls.materialSelectValue.value.density" required>
+          <mat-error *ngIf="dataForm.controls.materialDensity.errors?.required">
+            *Обязательное поле 
+          </mat-error>
+        </mat-form-field>
+        <!-- (dataForm.controls.materialDensity.dirty || dataForm.controls.materialDensity.touched) && -->
+      </div>
+    </div>
+
+    <div class="box_info">
+      <div>
+        <label>Профиль:</label><br>
+        <mat-radio-group formControlName="profileValue" name="profileValue">
+          <mat-radio-button class="box_radio-baton" *ngFor="let profile of profileList" [value]="profile">
+            {{profile.viewValue}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <!-- [value]="dataForm.controls.materialSelectValue.value.density" -->
+      <p>Исходные данные для расчета:</p>
+      <div class="detail_data" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="10px" [ngSwitch]="true">
+
+        <mat-form-field *ngSwitchCase="dataForm.controls.profileValue.value.value === 'rect'" fxFlex="16">
+          <input matInput placeholder="Ширина, м" required formControlName="firstParameter" name="firstParameter">
+        </mat-form-field>
+
+        <mat-form-field *ngSwitchCase="dataForm.controls.profileValue.value.value === 'rect'" fxFlex="16">
+          <input matInput placeholder="Высота, мм" required formControlName="secondParameter" name="secondParameter">
+        </mat-form-field>
+
+        <mat-form-field *ngSwitchCase="dataForm.controls.profileValue.value.value === 'hexagon'" fxFlex="16">
+          <mat-label>Размер шестигранника S, м:</mat-label>
+          <mat-select name="hexagon" required formControlName="selectedHexagon" name="selectedHexagon">
+            <mat-option *ngFor="let hexagon of hexagonList" [value]="hexagon">
+              {{hexagon.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field *ngSwitchCase="dataForm.controls.profileValue.value.value ==='hexagon'" fxFlex="16">
+          <input matInput placeholder="Масса погонного метра,кг/м" required
+            [value]="dataForm.controls.selectedHexagon.value.value">
+        </mat-form-field>
+
+        <mat-form-field
+          *ngSwitchCase="dataForm.controls.profileValue.value.value === 'circle' || dataForm.controls.profileValue.value.value === 'pipe'"
+          fxFlex="16">
+          <input matInput placeholder="Наружный диаметр, мм" required formControlName="firstParameter"
+            name="firstParameter">
+        </mat-form-field>
+        <mat-form-field *ngSwitchCase="dataForm.controls.profileValue.value.value === 'pipe'" fxFlex="16">
+          <input matInput placeholder="Внутренний диаметр, мм" required formControlName="secondParameter"
+            name="secondParameter">
+        </mat-form-field>
+        <mat-form-field fxFlex="16">
+          <input matInput placeholder="Длина заготовки, мм" required formControlName="lengthWorkPiece"
+            name="lengthWorkPiece">
+        </mat-form-field>
+        <mat-form-field fxFlex="16">
+          <input matInput placeholder="Ширина реза, мм" required formControlName="length" name="length">
+        </mat-form-field>
+        <mat-form-field fxFlex="16">
+          <input matInput placeholder="Коэффициент немерности заготовки и кривизны торца" required
+            formControlName="coefficient" name="coefficient">
+        </mat-form-field>
+        <mat-form-field fxFlex="15">
+          <input matInput placeholder="Количество деталей из заготовки, шт" required formControlName="qtyWorkPiece"
+            name="qtyWorkPiece">
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="box_info">
+      <mat-form-field class="notation">
+        <textarea matInput placeholder="Примечание" formControlName="notation" name="notation"></textarea>
+      </mat-form-field>
+    </div>
+    <div class="box_info">
+      <p class="title_detail">Дополнительные параметры:</p>
+      <mat-form-field class="header_form">
+        <textarea matInput placeholder="Шапка формы" formControlName="headerForm" name="headerForm"></textarea>
+      </mat-form-field>
+      <div>
+        <mat-form-field class="title_table">
+          <textarea matInput placeholder="Заголовок таблицы:" formControlName="titleTable" name="titleTable"></textarea>
+        </mat-form-field>
+      </div>
+      <div fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="20px">
+        <mat-form-field>
+          <textarea matInput placeholder="Должность" formControlName="userPosition" name="userPosition"></textarea>
+        </mat-form-field>
+        <mat-form-field>
+          <textarea matInput placeholder="ФИО" formControlName="userName" name="userName"></textarea>
+        </mat-form-field>
+      </div>
+      <div>
+        <p class="title_tech-condition">Технические требования</p>
+        <section>
+          <mat-checkbox class="checkCondition" formControlName="checkedTechCondition" name="checkedTechCondition">
+            <p *ngIf=" dataForm.controls.coefficient.value > 1">1.Норма расхода дана с учётом коэффициента
+              {{dataForm.controls.coefficient.value}}, который учитывает
+              немерность заготовки и кривизну торца заготовки.</p>
+          </mat-checkbox>
+        </section>
+        <mat-form-field class="field_tech-condition">
+          <textarea matInput formControlName="techCondition" name="techCondition"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+    <button mat-raised-button color="accent" class="create_button" (click)="create()">Создать</button>
+  </form>
+</mat-card>
