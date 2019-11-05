@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataTableComponent } from './data-table/data-table.component';
+import { MaterialModule } from '../material/material.module';
 
 
 
@@ -9,7 +10,8 @@ import { DataTableComponent } from './data-table/data-table.component';
     DataTableComponent,
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MaterialModule,
   ],
   exports: [
     DataTableComponent,

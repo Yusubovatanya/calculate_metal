@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, NgForm, FormArray, FormControl } from '@angular/forms';
 import { Hexagon } from 'src/app/core/models/hexagon.model';
 import { Material } from 'src/app/core/models/material.model';
 import { ProfileType } from 'src/app/core/models/profile.model';
-import { TableTitles } from 'src/app/core/models/table-titles.model';
 import { MetalDataService } from 'src/app/core/services/metal-data.service';
+import { CreateResultService } from 'src/app/main/create-result.service';
 
 @Component({
   selector: 'app-initial-form-data',
@@ -13,55 +13,27 @@ import { MetalDataService } from 'src/app/core/services/metal-data.service';
 })
 export class InitialFormDataComponent implements OnInit {
   dataForm: FormGroup;
-
-
-  detailNumber: string;
+  density: number;
+  profileList: ProfileType[];
+  profileValue: ProfileType;
   materialValue: Material = { value: "", density: 0 };
   materialList: Material[];
-  detailName: string;
-  firstParameter: string = "0";
-  secondParameter: string = "0";
-  lengthWorkPiece: string = "0";
-  length: string = "0";
   hexagonList: Hexagon[];
   selectedHexagon: Hexagon;
-  coefficient: string = "1.015";
-  qtyWorkPiece: number = 1;
-  detailWeight: number;
   userPosition: string = "Инженер-технолог";
   userName: string;
   notation: string;
-  result: number;
   headerForm: string = "Утверждаю";
-  profileList: ProfileType[];
-  tableTitles: TableTitles[];
-  profileValue: ProfileType;
-  totalResult: number;
-  tableFirstTitle: string;
-  tableSecondTitle: string;
-  headerFormList: string[];
-  titleTableList: string[];
-  msgError: string;
-  isError: boolean = false;
-  isResult: boolean = false;
-  techCondition: string = "";
   titleTable: string = "Нормы расхода материала";
-  densityWrite: string;
-  techConditionList: string[];
-  checkedTechCondition: boolean = false;
-  isShowElementValue: boolean;
-  qtyColspan: number;
+  validatorsValues: string[] = ['weightRect', 'heightRect', 'innerDiameter', 'outerDiameter', 'lengthWorkPiece', 'length'];
 
   constructor(
     private formBuild: FormBuilder,
-    private service: MetalDataService
+    private service: MetalDataService,
+    private createResultService: CreateResultService,
   ) { }
 
   ngOnInit() {
-    this.service.getTableTitles().subscribe((list: TableTitles[]) => {
-      this.tableTitles = list;
-    });
-
     this.service.getProfileList().subscribe((list: ProfileType[]) => {
       this.profileList = list;
       this.profileValue = this.profileList[0];
@@ -70,6 +42,7 @@ export class InitialFormDataComponent implements OnInit {
     this.service.getMaterialDataBase().subscribe((list: Material[]) => {
       this.materialList = list;
       this.materialValue = this.materialList[0];
+      this.density = this.materialValue.density;
     });
 
     this.service.getHexagonDataBase().subscribe((list: Hexagon[]) => {
@@ -87,24 +60,34 @@ export class InitialFormDataComponent implements OnInit {
       detailWeight: ['', []],
       materialSelectValue: [{ value: this.materialValue, disabled: false }, []],
       materialValue: [{ value: '', disabled: true }, []],
-      materialDensity: [this.materialValue.density, [Validators.required,]],
+      materialDensity: [this.density, [Validators.required, this.checkValidValue]],
       typeChangeMaterial: ['selectMaterial', []],
-      profileValue: ['', [Validators.required,]],
-      firstParameter: ['0', [Validators.required,]],
-      secondParameter: ['0', [Validators.required,]],
-      lengthWorkPiece: ['0', [Validators.required,]],
-      length: ['0', [Validators.required,]],
-      coefficient: ["1.015", [Validators.required,]],
-      qtyWorkPiece: [1, [Validators.required,]],
+      profileValue: [this.profileValue, [Validators.required,]],
+      weightRect: ['0', []],
+      heightRect: ['0', []],
+      innerDiameter: ['0', []],
+      outerDiameter: ['0', []],
+      lengthWorkPiece: ['0', [Validators.required, this.checkValidValue]],
+      length: ['0', [Validators.required]],
+      coefficient: ["1.015", [Validators.required, this.checkValidValue]],
+      qtyWorkPiece: [1, [Validators.required, this.checkValidValue]],
       selectedHexagon: [this.selectedHexagon, [Validators.required,]],
-      notation: [this.notation, [Validators.required,]],
-      headerForm: [this.headerForm, [Validators.required,]],
-      titleTable: [this.titleTable, [Validators.required,]],
-      userPosition: [this.userPosition, [Validators.required,]],
+      weightHexagon: [this.selectedHexagon.value, [Validators.required,]],
+      notation: [this.notation, []],
+      headerForm: [this.headerForm, []],
+      titleTable: [this.titleTable, []],
+      userPosition: [this.userPosition, []],
       userName: ['',],
-      checkedTechCondition: [false, []],
+      checkedTechCondition: [{ checked: true, text: "" }, [Validators.required,]],
       techCondition: ['', []]
     })
+    this.dataForm.get('outerDiameter').setValidators([Validators.required, this.checkValidValue]);
+  }
+
+  checkValidValue(form: AbstractControl) {
+    if (!!form.value) {
+      return +form.value > 0 ? null : { checkValidValue: true };
+    }
   }
 
   changeTypeMaterial(e) {
@@ -120,6 +103,64 @@ export class InitialFormDataComponent implements OnInit {
       this.dataForm.controls['materialSelectValue'].disable();
       this.dataForm.controls['materialValue'].enable();
     }
+  }
+
+  changeSelectMaterial() {
+    this.density = this.dataForm.controls.materialSelectValue.value.density;
+  }
+
+  changeMaterialDensity(e) {
+    this.density = e;
+  }
+
+  create() {
+    const formResult = { ... this.dataForm };
+    this.createResultService.createDataResult(formResult);
+  }
+
+  changeTypeProfile(event) {
+    this.resetValuesForm();
+    const type = event;
+    this.validatorsValues.forEach((element) => {
+      this.dataForm.get(element).clearValidators();
+    })
+
+    switch (type) {
+      case 'circle':
+        this.dataForm.get('outerDiameter').setValidators([Validators.required, this.checkValidValue]);
+        break;
+      case 'pipe':
+        this.dataForm.get('innerDiameter').setValidators([Validators.required]);
+        this.dataForm.get('outerDiameter').setValidators([Validators.required, this.checkValidValue]);
+        break;
+      case 'rect':
+        this.dataForm.get('weightRect').setValidators([Validators.required, this.checkValidValue]);
+        this.dataForm.get('heightRect').setValidators([Validators.required, this.checkValidValue]);
+        break;
+      default:
+        break;
+    }
+  }
+
+  resetValuesForm() {
+    this.validatorsValues.forEach((element) => {
+      this.dataForm.controls[element].reset('0');
+    })
+    this.dataForm.controls['qtyWorkPiece'].reset(1);
+    this.dataForm.controls['coefficient'].reset('1.015');
+  }
+
+  changeCheckCondition(event) {
+    const condition = event.source._elementRef.nativeElement.innerText;
+    const checkCondition = {
+      checked: event.checked,
+      text: condition,
+    }
+    this.dataForm.patchValue({ ['checkedTechCondition']: checkCondition });
+  }
+
+  clearValue(event) {
+    this.dataForm.patchValue({ [event.target.attributes.formcontrolname.value]: '' });
   }
 
 }

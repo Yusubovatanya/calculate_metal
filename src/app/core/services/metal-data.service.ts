@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class MetalDataService {
   constructor() { }
-  
+
   materialList: Material[] = [
     { value: 'Сталь 40Х ГОСТ 4543-71', density: 7820 },
     { value: 'Сталь 10 ГОСТ 1050-88', density: 7856 },
@@ -119,11 +119,13 @@ export class MetalDataService {
     { value: "hexagon", viewValue: "Шестигранник" }
   ];
 
-  tableTitles: TableTitles[] = [
-    { firstParameter: 'D, мм', secondParameter: 'd, мм' },
-    { firstParameter: 'a, мм', secondParameter: 'b, мм' },
-    { firstParameter: 'S', secondParameter: null }
-  ]
+  tableTitles: TableTitles = {
+    circle: { firstParameter: 'D, мм', secondParameter: null },
+    pipe: { firstParameter: 'D, мм', secondParameter: 'd, мм' },
+    rect: { firstParameter: 'a, мм', secondParameter: 'b, мм' },
+    hexagon: { firstParameter: 'S', secondParameter: null },
+  }
+
 
   getHexagonDataBase() {
     return of(this.hexagon.slice())
@@ -134,7 +136,7 @@ export class MetalDataService {
   }
 
   getTableTitles() {
-    return of(this.tableTitles.slice())
+    return of({ ...this.tableTitles })
   }
 
   getProfileList() {

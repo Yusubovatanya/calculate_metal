@@ -1,5 +1,5 @@
 <mat-card fxLayout="column" fxFlex="35">
-  <form [formGroup]="dataForm">
+  <form [formGroup]="dataForm" #form="ngForm">
     <div class="box_info">
       <p class="title_detail">Данные о детали:</p>
       <div fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="20px">
@@ -26,7 +26,8 @@
       <div fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="20px">
         <mat-form-field fxFlex="40">
           <mat-label>Материал</mat-label>
-          <mat-select formControlName="materialSelectValue" name="materialSelectValue">
+          <mat-select formControlName="materialSelectValue" name="materialSelectValue"
+            (selectionChange)="changeSelectMaterial()">
             <mat-option *ngFor="let material of materialList" [value]="material">
               {{material.value}}
             </mat-option>
@@ -37,36 +38,52 @@
         </mat-form-field>
         <mat-form-field fxFlex="20">
           <input matInput placeholder="Плотность, кг/м3" formControlName="materialDensity" name="materialDensity"
-            [value]="dataForm.controls.materialSelectValue.value.density" required>
+            [value]="density" required (ngModelChange)="changeMaterialDensity($event)">
           <mat-error *ngIf="dataForm.controls.materialDensity.errors?.required">
-            *Обязательное поле 
+            *Обязательное поле
+          </mat-error>
+          <mat-error *ngIf="dataForm.get('materialDensity').errors?.checkValidValue">
+            *Ввведите корректное значение!
           </mat-error>
         </mat-form-field>
-        <!-- (dataForm.controls.materialDensity.dirty || dataForm.controls.materialDensity.touched) && -->
       </div>
     </div>
 
     <div class="box_info">
       <div>
         <label>Профиль:</label><br>
-        <mat-radio-group formControlName="profileValue" name="profileValue">
+        <mat-radio-group formControlName="profileValue" name="profileValue" (change)="changeTypeProfile($event)">
           <mat-radio-button class="box_radio-baton" *ngFor="let profile of profileList" [value]="profile">
             {{profile.viewValue}}
           </mat-radio-button>
         </mat-radio-group>
       </div>
-      <!-- [value]="dataForm.controls.materialSelectValue.value.density" -->
       <p>Исходные данные для расчета:</p>
       <div class="detail_data" fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="10px" [ngSwitch]="true">
-
+        <!-- rect -->
         <mat-form-field *ngSwitchCase="dataForm.controls.profileValue.value.value === 'rect'" fxFlex="16">
-          <input matInput placeholder="Ширина, м" required formControlName="firstParameter" name="firstParameter">
+          <input matInput placeholder="Ширина, м" required formControlName="weightRect" name="weightRect"
+            (focus)="clearValue($event)">
+          <mat-error *ngIf="dataForm.controls.weightRect.errors?.required">
+            *Обязательное поле
+          </mat-error>
+          <mat-error *ngIf="dataForm.get('weightRect').errors?.checkValidValue">
+            *Ввведите корректное значение!
+          </mat-error>
         </mat-form-field>
 
         <mat-form-field *ngSwitchCase="dataForm.controls.profileValue.value.value === 'rect'" fxFlex="16">
-          <input matInput placeholder="Высота, мм" required formControlName="secondParameter" name="secondParameter">
+          <input matInput placeholder="Высота, мм" required formControlName="heightRect" name="heightRect"
+            (focus)="clearValue($event)">
+          <mat-error *ngIf="dataForm.controls.heightRect.errors?.required">
+            *Обязательное поле
+          </mat-error>
+          <mat-error *ngIf="dataForm.get('heightRect').errors?.checkValidValue">
+            *Ввведите корректное значение!
+          </mat-error>
         </mat-form-field>
 
+        <!--Hexagon  -->
         <mat-form-field *ngSwitchCase="dataForm.controls.profileValue.value.value === 'hexagon'" fxFlex="16">
           <mat-label>Размер шестигранника S, м:</mat-label>
           <mat-select name="hexagon" required formControlName="selectedHexagon" name="selectedHexagon">
@@ -77,34 +94,79 @@
         </mat-form-field>
 
         <mat-form-field *ngSwitchCase="dataForm.controls.profileValue.value.value ==='hexagon'" fxFlex="16">
-          <input matInput placeholder="Масса погонного метра,кг/м" required
-            [value]="dataForm.controls.selectedHexagon.value.value">
+          <input matInput placeholder="Масса погонного метра,кг/м" required readonly
+            [value]="dataForm.controls.selectedHexagon.value.value" formControlName="weightHexagon"
+            name="weightHexagon">
         </mat-form-field>
 
+        <!-- circle pipe -->
         <mat-form-field
           *ngSwitchCase="dataForm.controls.profileValue.value.value === 'circle' || dataForm.controls.profileValue.value.value === 'pipe'"
           fxFlex="16">
-          <input matInput placeholder="Наружный диаметр, мм" required formControlName="firstParameter"
-            name="firstParameter">
+          <input matInput placeholder="Наружный диаметр, мм" required formControlName="outerDiameter"
+            name="outerDiameter" (focus)="clearValue($event)">
+          <mat-error *ngIf="dataForm.controls.outerDiameter.errors?.required">
+            *Обязательное поле
+          </mat-error>
+          <mat-error *ngIf="dataForm.get('outerDiameter').errors?.checkValidValue">
+            *Ввведите корректное значение!
+          </mat-error>
         </mat-form-field>
+
+        <!-- pipe -->
         <mat-form-field *ngSwitchCase="dataForm.controls.profileValue.value.value === 'pipe'" fxFlex="16">
-          <input matInput placeholder="Внутренний диаметр, мм" required formControlName="secondParameter"
-            name="secondParameter">
+          <input matInput placeholder="Внутренний диаметр, мм" required formControlName="innerDiameter"
+            name="innerDiameter" (focus)="clearValue($event)">
+          <mat-error *ngIf="dataForm.controls.innerDiameter.errors?.required">
+            *Обязательное поле
+          </mat-error>
+          <mat-error *ngIf="dataForm.get('innerDiameter').errors?.checkValidValue">
+            *Ввведите корректное значение!
+          </mat-error>
         </mat-form-field>
+
+        <!-- all -->
         <mat-form-field fxFlex="16">
           <input matInput placeholder="Длина заготовки, мм" required formControlName="lengthWorkPiece"
-            name="lengthWorkPiece">
+            name="lengthWorkPiece" (focus)="clearValue($event)">
+          <mat-error *ngIf="dataForm.controls.lengthWorkPiece.errors?.required">
+            *Обязательное поле
+          </mat-error>
+          <mat-error *ngIf="dataForm.get('lengthWorkPiece').errors?.checkValidValue">
+            *Ввведите корректное значение!
+          </mat-error>
         </mat-form-field>
+
         <mat-form-field fxFlex="16">
-          <input matInput placeholder="Ширина реза, мм" required formControlName="length" name="length">
+          <input matInput placeholder="Ширина реза, мм" required formControlName="length" name="length"
+            (focus)="clearValue($event)">
+          <mat-error *ngIf="dataForm.controls.length.errors?.required">
+            *Обязательное поле
+          </mat-error>
+          <mat-error *ngIf="dataForm.get('length').errors?.checkValidValue">
+            *Ввведите корректное значение!
+          </mat-error>
         </mat-form-field>
+
         <mat-form-field fxFlex="16">
           <input matInput placeholder="Коэффициент немерности заготовки и кривизны торца" required
             formControlName="coefficient" name="coefficient">
+          <mat-error *ngIf="dataForm.controls.coefficient.errors?.required">
+            *Обязательное поле
+          </mat-error>
+          <mat-error *ngIf="dataForm.get('coefficient').errors?.checkValidValue">
+            *Ввведите корректное значение!
+          </mat-error>
         </mat-form-field>
         <mat-form-field fxFlex="15">
           <input matInput placeholder="Количество деталей из заготовки, шт" required formControlName="qtyWorkPiece"
             name="qtyWorkPiece">
+          <mat-error *ngIf="dataForm.controls.qtyWorkPiece.errors?.required">
+            *Обязательное поле
+          </mat-error>
+          <mat-error *ngIf="dataForm.get('qtyWorkPiece').errors?.checkValidValue">
+            *Ввведите корректное значение!
+          </mat-error>
         </mat-form-field>
       </div>
     </div>
@@ -134,8 +196,9 @@
       <div>
         <p class="title_tech-condition">Технические требования</p>
         <section>
-          <mat-checkbox class="checkCondition" formControlName="checkedTechCondition" name="checkedTechCondition">
-            <p *ngIf=" dataForm.controls.coefficient.value > 1">1.Норма расхода дана с учётом коэффициента
+          <mat-checkbox (change)="changeCheckCondition($event)" formControlName="checkedTechCondition"
+            name="checkedTechCondition" [checked]="dataForm.controls.checkedTechCondition.value.checked">
+            <p *ngIf="dataForm.controls.coefficient.value > 1">1.Норма расхода дана с учётом коэффициента
               {{dataForm.controls.coefficient.value}}, который учитывает
               немерность заготовки и кривизну торца заготовки.</p>
           </mat-checkbox>

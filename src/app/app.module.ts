@@ -4,23 +4,18 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
-import { NgxPrintModule } from 'ngx-print';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from './material/material.module';
-import { DataTableComponent } from './shared/data-table/data-table.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    DataTableComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    NgxPrintModule,
     FlexLayoutModule,
     MaterialModule,
   ],
