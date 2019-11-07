@@ -6,8 +6,7 @@ import { MainComponent } from './main.component';
 import { MaterialModule } from '../material/material.module';
 import { InitialFormModule } from './components/initial-form/initial-form.module';
 import { ResultModule } from './components/result/result.module';
-
-
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 @NgModule({
@@ -18,6 +17,7 @@ import { ResultModule } from './components/result/result.module';
     CommonModule,
     MainRoutingModule,
     MaterialModule,
+    FlexLayoutModule,
     InitialFormModule,
     ResultModule,
   ],

@@ -113,10 +113,10 @@ export class MetalDataService {
   ];
 
   profileList: ProfileType[] = [
-    { value: "circle", viewValue: "Круг" },
-    { value: "pipe", viewValue: "Труба" },
-    { value: "rect", viewValue: "Квадрат" },
-    { value: "hexagon", viewValue: "Шестигранник" }
+    { value: 'circle', viewValue: 'Круг' },
+    { value: 'pipe', viewValue: 'Труба' },
+    { value: 'rect', viewValue: 'Квадрат' },
+    { value: 'hexagon', viewValue: 'Шестигранник' }
   ];
 
   tableTitles: TableTitles = {
@@ -133,10 +133,6 @@ export class MetalDataService {
 
   getMaterialDataBase(): Observable<Material[]> {
     return of(this.materialList.slice());
-  }
-
-  getTableTitles() {
-    return of({ ...this.tableTitles })
   }
 
   getProfileList() {

@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DataTableComponent } from './data-table/data-table.component';
 import { MaterialModule } from '../material/material.module';
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 
 
 
@@ -12,9 +14,11 @@ import { MaterialModule } from '../material/material.module';
   imports: [
     CommonModule,
     MaterialModule,
+    FlexLayoutModule,
   ],
   exports: [
     DataTableComponent,
+  ], entryComponents: [
   ]
 })
 export class SharedModule { }

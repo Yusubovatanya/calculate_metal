@@ -1,0 +1,12 @@
+.logo {
+  background: url(../../../assets/img/gears.png) no-repeat center/contain;
+  width: 36px;
+  height: 36px;
+}
+
+.logo_title {
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  padding-left: 5px;
+  font-size: 18px;
+}

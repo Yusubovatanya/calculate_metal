@@ -1,5 +1,5 @@
 {
-  "name": "metallworking",
+  "name": "metalworking",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -22,10 +22,12 @@
     "@angular/platform-browser": "~8.2.8",
     "@angular/platform-browser-dynamic": "~8.2.8",
     "@angular/router": "~8.2.8",
+    "file-saver": "^2.0.2",
     "hammerjs": "^2.0.8",
     "ngx-print": "^1.2.0-beta.3",
     "rxjs": "~6.4.0",
     "tslib": "^1.10.0",
+    "xlsx": "^0.15.1",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {

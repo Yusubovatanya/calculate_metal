@@ -5,6 +5,8 @@ import { Material } from 'src/app/core/models/material.model';
 import { ProfileType } from 'src/app/core/models/profile.model';
 import { MetalDataService } from 'src/app/core/services/metal-data.service';
 import { CreateResultService } from 'src/app/main/create-result.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-initial-form-data',
@@ -13,24 +15,24 @@ import { CreateResultService } from 'src/app/main/create-result.service';
 })
 export class InitialFormDataComponent implements OnInit {
   dataForm: FormGroup;
-  density: number;
+  density: number = 0;
   profileList: ProfileType[];
   profileValue: ProfileType;
-  materialValue: Material = { value: "", density: 0 };
+  materialValue: Material = { value: '', density: 0 };
   materialList: Material[];
   hexagonList: Hexagon[];
   selectedHexagon: Hexagon;
-  userPosition: string = "Инженер-технолог";
-  userName: string;
-  notation: string;
-  headerForm: string = "Утверждаю";
-  titleTable: string = "Нормы расхода материала";
+  userPosition: string = 'Инженер-технолог';
+  headerForm: string = 'Утверждаю';
+  titleTable: string = 'Норма расхода материала';
   validatorsValues: string[] = ['weightRect', 'heightRect', 'innerDiameter', 'outerDiameter', 'lengthWorkPiece', 'length'];
+  techConditionCoefficient: string ='';
 
   constructor(
     private formBuild: FormBuilder,
     private service: MetalDataService,
     private createResultService: CreateResultService,
+    private _snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -62,26 +64,29 @@ export class InitialFormDataComponent implements OnInit {
       materialValue: [{ value: '', disabled: true }, []],
       materialDensity: [this.density, [Validators.required, this.checkValidValue]],
       typeChangeMaterial: ['selectMaterial', []],
-      profileValue: [this.profileValue, [Validators.required,]],
+      profileValue: [this.profileValue, [Validators.required]],
       weightRect: ['0', []],
       heightRect: ['0', []],
       innerDiameter: ['0', []],
       outerDiameter: ['0', []],
       lengthWorkPiece: ['0', [Validators.required, this.checkValidValue]],
       length: ['0', [Validators.required]],
-      coefficient: ["1.015", [Validators.required, this.checkValidValue]],
+      coefficient: ['1.015', [Validators.required, this.checkValidValue]],
       qtyWorkPiece: [1, [Validators.required, this.checkValidValue]],
-      selectedHexagon: [this.selectedHexagon, [Validators.required,]],
-      weightHexagon: [this.selectedHexagon.value, [Validators.required,]],
-      notation: [this.notation, []],
+      selectedHexagon: [this.selectedHexagon, [Validators.required]],
+      weightHexagon: [this.selectedHexagon.value, [Validators.required]],
+      notation: ['', []],
       headerForm: [this.headerForm, []],
       titleTable: [this.titleTable, []],
       userPosition: [this.userPosition, []],
-      userName: ['',],
-      checkedTechCondition: [{ checked: true, text: "" }, [Validators.required,]],
+      userName: ['', []],
+      checkedHeader: [true, [Validators.required]],
+      checkedTitle: [true, [Validators.required]],
+      checkedUserSign: [true, [Validators.required]],
+      checkedTechCondition: [{ checked: true, text: this.techConditionCoefficient }, [Validators.required]],
       techCondition: ['', []]
     })
-    this.dataForm.get('outerDiameter').setValidators([Validators.required, this.checkValidValue]);
+    this.coefficientTechCondition();
   }
 
   checkValidValue(form: AbstractControl) {
@@ -91,7 +96,7 @@ export class InitialFormDataComponent implements OnInit {
   }
 
   changeTypeMaterial(e) {
-    if (e.value === "selectMaterial") {
+    if (e.value === 'selectMaterial') {
       this.dataForm.controls['materialValue'].disable();
       this.dataForm.controls['materialSelectValue'].enable();
       this.dataForm.controls['materialDensity'].patchValue('');
@@ -99,7 +104,7 @@ export class InitialFormDataComponent implements OnInit {
       this.dataForm.controls['materialDensity'].patchValue(this.materialValue.density);
       this.dataForm.controls['materialValue'].patchValue('');
     }
-    if (e.value === "writeMaterial") {
+    if (e.value === 'writeMaterial') {
       this.dataForm.controls['materialSelectValue'].disable();
       this.dataForm.controls['materialValue'].enable();
     }
@@ -114,8 +119,14 @@ export class InitialFormDataComponent implements OnInit {
   }
 
   create() {
-    const formResult = { ... this.dataForm };
-    this.createResultService.createDataResult(formResult);
+    if (this.dataForm.valid) {
+      const formResult = { ... this.dataForm };
+      this.createResultService.createDataResult(formResult);
+    } else {
+      this._snackBar.open('Пожалуйста, проверьте правильнось введенных данных!', 'Error', {
+        duration: 2000,
+      });
+    }
   }
 
   changeTypeProfile(event) {
@@ -140,6 +151,8 @@ export class InitialFormDataComponent implements OnInit {
       default:
         break;
     }
+    this.dataForm.get('lengthWorkPiece').setValidators([Validators.required, this.checkValidValue]);
+    this.dataForm.get('length').setValidators([Validators.required]);
   }
 
   resetValuesForm() {
@@ -151,16 +164,30 @@ export class InitialFormDataComponent implements OnInit {
   }
 
   changeCheckCondition(event) {
-    const condition = event.source._elementRef.nativeElement.innerText;
-    const checkCondition = {
-      checked: event.checked,
-      text: condition,
-    }
-    this.dataForm.patchValue({ ['checkedTechCondition']: checkCondition });
+    this.dataForm.patchValue({
+      ['checkedTechCondition']: {
+        checked: event.checked,
+        text: this.techConditionCoefficient,
+      }
+    });;
   }
 
   clearValue(event) {
-    this.dataForm.patchValue({ [event.target.attributes.formcontrolname.value]: '' });
+    const field = event.target.attributes.formcontrolname.value;
+    if (+this.dataForm.value[field] <= 0) {
+      this.dataForm.patchValue({ [field]: '' }); 
+    }
   }
 
+  coefficientTechCondition() {
+    this.techConditionCoefficient = `1.Норма расхода дана с учётом коэффициента
+    ${this.dataForm.value.coefficient}, который учитывает
+    немерность заготовки и кривизну торца заготовки.`
+
+    this.dataForm.patchValue({
+      ['checkedTechCondition']: {
+        text: this.techConditionCoefficient,
+      }
+    });
+  }
 }

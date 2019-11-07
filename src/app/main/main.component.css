@@ -1,0 +1,10 @@
+.wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.main_title {
+  font-size: 20px;
+  text-align: center;
+  text-transform: uppercase;
+}

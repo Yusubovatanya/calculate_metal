@@ -1,7 +1,17 @@
+.form_heard {
+  margin-bottom: 16px;
+}
+
+.form_heard p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
 .box_info {
   border: 1px solid #e6dfdf;
   border-radius: 5px;
-  padding: 20px;
+  padding: 10px;
   margin-bottom: 20px;
 }
 
@@ -24,7 +34,6 @@
   width: 100%;
 }
 
-
 .text_footer {
   padding-top: 50px
 }
@@ -39,10 +48,6 @@
 
 .title_tech-condition {
   color: rgba(0, 0, 0, .54);
-}
-
-.header_form textarea {
-  height: 50px;
 }
 
 .tech_condition {
@@ -68,6 +73,14 @@
 :host ::ng-deep .mat-checkbox-inner-container {
   margin-top: 0;
   margin-bottom: 0;
+}
+
+.form_box {
+  margin: 20px;
+}
+
+.create_button {
+  margin-left: auto;
 }
 
 

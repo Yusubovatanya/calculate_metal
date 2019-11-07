@@ -11,31 +11,18 @@ import { DataTable } from 'src/app/core/models/data-table.model';
 export class DataTableComponent implements OnInit {
   @Input() dataTable: DataTable;
   tableTitles: TableTitles;
-  tableFirstTitle: string;
-  tableSecondTitle: any;
-  qtyColspan: any;
+
   constructor(
     private service: MetalDataService,
   ) { }
 
   ngOnInit() {
-    this.service.getTableTitles().subscribe((obj: TableTitles) => {
-      this.tableTitles = obj;
-    });
-    console.log(this.dataTable)
-    this.prepareDataTable();
-    this.isShowElement();
+    this.tableTitles = this.service.tableTitles
+    this.determineQtyColspan();
   }
 
-  prepareDataTable() {
-    this.tableFirstTitle = this.tableTitles[this.dataTable.type.value].firstParameter;
-    this.tableSecondTitle = this.tableTitles[this.dataTable.type.value].secondParameter;
-  }
-
-  isShowElement() {
-    return this.dataTable.values.filter(el => {
-      return el
-    }).length
+  determineQtyColspan() {
+    return this.dataTable.values.filter(el => el).length;
   }
 
 }

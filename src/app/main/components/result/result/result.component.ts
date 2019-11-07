@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CreateResultService } from 'src/app/main/create-result.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-result',
@@ -16,9 +17,10 @@ export class ResultComponent implements OnInit {
   tableSecondTitle: string;
   headerFormList: string[];
   titleTableList: string[];
-  msgError: string;
+  msgError: string = 'Невозмозно выполнить расчет! Значения исходных даннных слишком малы! \
+  Пожалуйста, проверьте правильнось введенных данных!';
   isError: boolean = false;
-  techCondition: string = "";
+  techCondition: string = '';
 
   materialDensity: string;
   techConditionList: string[];
@@ -30,6 +32,7 @@ export class ResultComponent implements OnInit {
 
   constructor(
     private createResultService: CreateResultService,
+    private _snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -41,16 +44,16 @@ export class ResultComponent implements OnInit {
   }
 
   prepareDataForm() {
-    this.headerFormList = this.transformTextAreal(this.dataForm.value.headerForm);
-    this.titleTableList = this.transformTextAreal(this.dataForm.value.titleTable);
-    this.techConditionList = this.transformTextAreal(this.dataForm.value.techCondition);
+    this.headerFormList = this.dataForm.value.headerForm ? this.transformTextAreal(this.dataForm.value.headerForm) : '';
+    this.titleTableList = this.dataForm.value.titleTable ? this.transformTextAreal(this.dataForm.value.titleTable) : '';
+    this.techConditionList = this.dataForm.value.techCondition ? this.transformTextAreal(this.dataForm.value.techCondition): '';
     this.userPosition = this.dataForm.value.userPosition;
     this.userName = this.dataForm.value.userName;
     this.dataTable = {};
     let initialResult;
     let parameters = [];
     switch (this.dataForm.value.profileValue.value) {
-      case "circle":
+      case 'circle':
         parameters = [
           this.dataForm.value.outerDiameter,
           null,
@@ -63,7 +66,7 @@ export class ResultComponent implements OnInit {
         );
 
         break;
-      case "pipe":
+      case 'pipe':
         parameters = [
           this.dataForm.value.outerDiameter,
           this.dataForm.value.innerDiameter,
@@ -74,7 +77,7 @@ export class ResultComponent implements OnInit {
           [...parameters, this.dataForm.value.materialDensity, this.dataForm.value.coefficient]
         );
         break;
-      case "rect":
+      case 'rect':
         parameters = [
           this.dataForm.value.weightRect,
           this.dataForm.value.heightRect,
@@ -85,7 +88,7 @@ export class ResultComponent implements OnInit {
           [...parameters, this.dataForm.value.materialDensity, this.dataForm.value.coefficient]
         );
         break;
-      case "hexagon":
+      case 'hexagon':
         parameters = [
           this.dataForm.value.selectedHexagon.value,
           null,
@@ -110,24 +113,26 @@ export class ResultComponent implements OnInit {
       this.dataTable.detailNumber = this.dataForm.value.detailNumber;
       this.dataTable.detailName = this.dataForm.value.detailName;
       this.dataTable.detailWeight = this.dataForm.value.detailWeight;
-      this.dataTable.material = this.dataForm.value.materialSelectValue.value || this.dataForm.value.materialValue;
+      this.dataTable.material = this.dataForm.value.materialSelectValue ? this.dataForm.value.materialSelectValue.value : this.dataForm.value.materialValue;
     }
-    console.log(this.dataTable)
   }
 
   transformTextAreal(list) {
-    return list.split("\n");
+    return list.split('\n');
   }
 
   checkErr(initialResult) {
-    console.log(initialResult)
     if (!initialResult) {
       this.isResult = false;
-      this.isError = true;
-      this.msgError = "Невозмозно выполнить расчет! Пожалуйста, проверьте правильнось введенных данных!";
+      this._snackBar.open('Пожалуйста, проверьте правильнось введенных данных!', 'Error', {
+        duration: 5000,
+      });
       return false;
     } else {
       this.isResult = true;
+      this._snackBar.open('Расчет выполнент успешно!', 'Success', {
+        duration: 5000,
+      });
       return true;
     }
   }
@@ -146,9 +151,10 @@ export class ResultComponent implements OnInit {
       return result = +result.toFixed(5)
     }
     else {
-      this.isError = true;
-      this.msgError = "Невозможно произвести рассчет! Значения исходных даннных слишком малы"
+      this.isResult = false;
+      this._snackBar.open(this.msgError, 'Error', {
+        duration: 5000,
+      });
     }
   }
-
 }

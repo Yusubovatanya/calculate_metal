@@ -1,33 +1,32 @@
-<mat-card fxFlex="60" class="box_result">
-  <p>Результаты расчета:</p>
-  <mat-card *ngIf="isResult" fxLayout="column">
-    <div id="form_print">
-      <div class="text_header">
-        <p *ngFor="let stroke of headerFormList">{{stroke}}</p>
-      </div>
-      <div class="text_title-table">
-        <p *ngFor="let stroke of titleTableList">{{stroke}}</p>
-      </div>
+<mat-card fxLayout="column" class="result_box" *ngIf="isResult">
+  <div>
+    <p>Результаты расчета:</p>
+    <mat-card >
+      <div id="form_print">
+        <div fxLayout="column" fxLayoutAlign="space-between">
+          <div class="text_header" *ngIf="dataForm.value.checkedHeader">
+            <p *ngFor="let stroke of headerFormList">{{stroke}}</p>
+          </div>
+          <div class="text_title-table" *ngIf="dataForm.value.checkedTitle">
+            <p *ngFor="let stroke of titleTableList">{{stroke}}</p>
+          </div>
 
-      <app-data-table [dataTable]="dataTable"></app-data-table>
-
-      <p class="tech_condition" *ngIf="dataForm.value.checkedTechCondition.checked">
-        {{dataForm.value.checkedTechCondition.text}}
-      </p>
-      <p *ngFor="let stroke of techConditionList ">{{stroke}}</p>
-      <div class="text_footer" fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="10px">
-        <p>{{dataForm.value.userPosition}}</p>
-        <p>{{dataForm.value.userName}}</p>
+          <app-data-table [dataTable]="dataTable"></app-data-table>
+          <div class="tech_condition">
+            <p *ngIf="dataForm.value.checkedTechCondition.checked">
+              {{dataForm.value.checkedTechCondition.text}}
+            </p>
+            <p *ngFor="let stroke of techConditionList">{{stroke}}</p>
+          </div>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between" fxLayoutGap="10px" *ngIf="dataForm.value.checkedUserSign"
+          class="user_sign">
+          <p>{{dataForm.value.userPosition}}</p>
+          <p>{{dataForm.value.userName}}</p>
+        </div>
       </div>
-    </div>
-  </mat-card>
-  <div *ngIf="isError">
-    <mat-card>
-      <span> <i class="material-icons error_icon">error</i>{{this.msgError}}</span>
     </mat-card>
+    <button class="button_print" *ngIf="isResult" mat-raised-button color="accent" ngxPrint [useExistingCss]="true"
+      printTitle="Form" printSectionId="form_print">Печать</button>
   </div>
-
-  
-  <button *ngIf="isResult" mat-raised-button color="accent" class="create_button" ngxPrint [useExistingCss]="true"
-    printTitle="Form" printSectionId="form_print" class="button_print">Печать</button>
 </mat-card>
