@@ -130,7 +130,7 @@ export class ResultComponent implements OnInit {
       return false;
     } else {
       this.isResult = true;
-      this._snackBar.open('Расчет выполнент успешно!', 'Success', {
+      this._snackBar.open('Расчет выполнен успешно!', 'Success', {
         duration: 5000,
       });
       return true;
