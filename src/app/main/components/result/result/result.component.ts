@@ -46,7 +46,7 @@ export class ResultComponent implements OnInit {
   prepareDataForm() {
     this.headerFormList = this.dataForm.value.headerForm ? this.transformTextAreal(this.dataForm.value.headerForm) : '';
     this.titleTableList = this.dataForm.value.titleTable ? this.transformTextAreal(this.dataForm.value.titleTable) : '';
-    this.techConditionList = this.dataForm.value.techCondition ? this.transformTextAreal(this.dataForm.value.techCondition): '';
+    this.techConditionList = this.dataForm.value.techCondition ? this.transformTextAreal(this.dataForm.value.techCondition) : '';
     this.userPosition = this.dataForm.value.userPosition;
     this.userName = this.dataForm.value.userName;
     this.dataTable = {};

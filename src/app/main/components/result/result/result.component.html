@@ -13,8 +13,8 @@
 
           <app-data-table [dataTable]="dataTable"></app-data-table>
           <div class="tech_condition">
-            <p *ngIf="dataForm.value.checkedTechCondition.checked">
-              {{dataForm.value.checkedTechCondition.text}}
+            <p *ngIf="dataForm.value.checkedTechCondition">
+              {{dataForm.value.checkedCoefficientTechCondition}}
             </p>
             <p *ngFor="let stroke of techConditionList">{{stroke}}</p>
           </div>

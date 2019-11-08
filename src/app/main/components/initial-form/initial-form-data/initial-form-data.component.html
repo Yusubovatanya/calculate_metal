@@ -188,7 +188,7 @@
         <textarea matInput placeholder="Примечание" formControlName="notation" name="notation"></textarea>
       </mat-form-field>
     </div>
-    <div class="box_info">
+    <div class="box_info" fxFlex="100">
       <p class="title_detail">Дополнительные параметры:</p>
       <div fxLayout="row wrap" fxLayoutAlign="start" fxLayoutGap="10px">
         <!-- header -->
@@ -212,10 +212,16 @@
       <!-- tech-condition -->
       <div>
         <p class="title_tech-condition">Технические требования</p>
-        <mat-checkbox (change)="changeCheckCondition($event)" formControlName="checkedTechCondition"
-          name="checkedTechCondition" [checked]="dataForm.controls.checkedTechCondition.value.checked">
-          {{techConditionCoefficient}}
-        </mat-checkbox>
+        <div fxLayout="row" fxLayoutAlign="start">
+          <mat-checkbox formControlName="checkedTechCondition"
+            name="checkedTechCondition">
+          </mat-checkbox>
+          <mat-form-field class="field_tech-condition">
+            <textarea matInput formControlName="checkedCoefficientTechCondition"
+              name="checkedCoefficientTechCondition"></textarea>
+          </mat-form-field>
+        </div>
+
         <mat-form-field class="field_tech-condition">
           <textarea matInput formControlName="techCondition" name="techCondition"></textarea>
         </mat-form-field>
@@ -233,6 +239,7 @@
           </mat-form-field>
         </div>
       </div>
+
     </div>
     <button mat-raised-button color="accent" (click)="create()" class="create_button">Создать</button>
   </form>

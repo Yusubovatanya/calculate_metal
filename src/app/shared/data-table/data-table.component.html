@@ -9,9 +9,10 @@
     <td rowspan="2">Примечание</td>
   </tr>
   <tr>
-    <td>{{determineQtyColspantableTitles[determineQtyColspandataTable.type.value].firstParameter}}</td>
-    <td *ngIf="determineQtyColspandataTable.values[1]">
-      {{determineQtyColspantableTitles[determineQtyColspandataTable.type.value].secondParameter}}</td>
+    <td>{{tableTitles[dataTable.type.value].firstParameter}}</td>
+    <td *ngIf="dataTable.values[1]">
+      {{tableTitles[dataTable.type.value].secondParameter}}
+    </td>
     <td>L, мм</td>
     <td>l<sub>рез.</sub>, мм</td>
   </tr>

@@ -26,7 +26,7 @@ export class InitialFormDataComponent implements OnInit {
   headerForm: string = 'Утверждаю';
   titleTable: string = 'Норма расхода материала';
   validatorsValues: string[] = ['weightRect', 'heightRect', 'innerDiameter', 'outerDiameter', 'lengthWorkPiece', 'length'];
-  techConditionCoefficient: string ='';
+  techConditionCoefficient: string = '';
 
   constructor(
     private formBuild: FormBuilder,
@@ -83,8 +83,9 @@ export class InitialFormDataComponent implements OnInit {
       checkedHeader: [true, [Validators.required]],
       checkedTitle: [true, [Validators.required]],
       checkedUserSign: [true, [Validators.required]],
-      checkedTechCondition: [{ checked: true, text: this.techConditionCoefficient }, [Validators.required]],
-      techCondition: ['', []]
+      checkedTechCondition: [true, [Validators.required]],
+      techCondition: ['', []],
+      checkedCoefficientTechCondition: ['', []],
     })
     this.coefficientTechCondition();
   }
@@ -130,11 +131,11 @@ export class InitialFormDataComponent implements OnInit {
   }
 
   changeTypeProfile(event) {
-    this.resetValuesForm();
-    const type = event;
+    const type = event.value.value;
     this.validatorsValues.forEach((element) => {
       this.dataForm.get(element).clearValidators();
-    })
+    });
+    this.resetValuesForm();
 
     switch (type) {
       case 'circle':
@@ -162,32 +163,20 @@ export class InitialFormDataComponent implements OnInit {
     this.dataForm.controls['qtyWorkPiece'].reset(1);
     this.dataForm.controls['coefficient'].reset('1.015');
   }
-
-  changeCheckCondition(event) {
-    this.dataForm.patchValue({
-      ['checkedTechCondition']: {
-        checked: event.checked,
-        text: this.techConditionCoefficient,
-      }
-    });;
-  }
-
   clearValue(event) {
     const field = event.target.attributes.formcontrolname.value;
     if (+this.dataForm.value[field] <= 0) {
-      this.dataForm.patchValue({ [field]: '' }); 
+      this.dataForm.patchValue({ [field]: '' });
     }
   }
 
   coefficientTechCondition() {
-    this.techConditionCoefficient = `1.Норма расхода дана с учётом коэффициента
-    ${this.dataForm.value.coefficient}, который учитывает
+    const techConditionCoefficient = `1.Норма расхода дана с учётом коэффициента\
+    ${this.dataForm.value.coefficient}, который учитывает\
     немерность заготовки и кривизну торца заготовки.`
 
     this.dataForm.patchValue({
-      ['checkedTechCondition']: {
-        text: this.techConditionCoefficient,
-      }
+      ['checkedCoefficientTechCondition']: techConditionCoefficient,
     });
   }
 }
